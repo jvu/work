@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # quietMode=0 means to print out what file is being checked, 1 means to mute it
-quietMode=1
+quietMode=0
 
 # multithread=1 means to use multithreading (will use your CPU) 0 means to not use it
 # multithread=1 resulted time 7 min 46 seconds compare to multithread=0 resulted time 14 minutes 6 seconds
