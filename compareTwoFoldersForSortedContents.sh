@@ -52,12 +52,12 @@ recurse() {
 				# It is a folder
 				recurse "$1/$2" $folderAChild 
 			else
-				echo "ERROR: folder $i exists but folder $folderB/$relativePath does not exists"
+				echo "===== ERROR: folder $i exists but folder $folderB/$relativePath does not exists"
 			fi
 		elif [ -f "$i" ]; then
 			if [ -f "$folderB/$relativePath" ];then
 				if [ $quietMode -eq 0 ];then
-					echo "===== Checking $relativePath"
+					echo "Checking $relativePath"
 				fi
 				# It is a file
 				# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
@@ -68,7 +68,7 @@ recurse() {
 				fi
 				
 			else
-				echo "ERROR: file $i exists but file $folderB/$relativePath does not exists"
+				echo "===== ERROR: file $i exists but file $folderB/$relativePath does not exists"
 			fi
 		fi
 	done
@@ -90,7 +90,7 @@ for i in "$folderA"/*; do
 	elif [ -f "$i" ]; then
 		if [ -f "$folderB/$folderAChild" ];then
 			if [ $quietMode -eq 0 ];then
-				echo "===== Checking $folderAChild"
+				echo "Checking $folderAChild"
 			fi
 			# It is a file
 			# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
@@ -100,7 +100,7 @@ for i in "$folderA"/*; do
 				sortAndCompareFiles $i "$folderB/$folderAChild"
 			fi
 		else
-			echo "ERROR: file $i exists but file $folderB/$folderAChild does not exists"
+			echo "===== ERROR: file $i exists but file $folderB/$folderAChild does not exists"
 		fi
 	fi
 done
