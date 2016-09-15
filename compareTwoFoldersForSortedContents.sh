@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # quietMode=0 means to print out what file is being checked, 1 means to mute it
-quietMode=0
+quietMode=1
+
+# multithread=1 means to use multithreading (will use your CPU) 0 means to not use it
+# multithread=1 resulted time 7 min 46 seconds compare to multithread=0 resulted time 14 minutes 6 seconds
+multithread=1
 
 if [ "$#" -lt 2 ]
 then
@@ -57,7 +61,12 @@ recurse() {
 				fi
 				# It is a file
 				# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
-				sortAndCompareFiles $i "$folderB/$relativePath" &
+				if [ $multithread -eq 1 ];then
+					sortAndCompareFiles $i "$folderB/$relativePath" &
+				else
+					sortAndCompareFiles $i "$folderB/$relativePath"
+				fi
+				
 			else
 				echo "ERROR: file $i exists but file $folderB/$relativePath does not exists"
 			fi
@@ -85,7 +94,11 @@ for i in "$folderA"/*; do
 			fi
 			# It is a file
 			# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
-			sortAndCompareFiles $i "$folderB/$folderAChild" &
+			if [ $multithread -eq 1 ];then
+				sortAndCompareFiles $i "$folderB/$folderAChild" &
+			else
+				sortAndCompareFiles $i "$folderB/$folderAChild"
+			fi
 		else
 			echo "ERROR: file $i exists but file $folderB/$folderAChild does not exists"
 		fi
