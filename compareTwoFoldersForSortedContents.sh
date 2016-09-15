@@ -9,7 +9,6 @@ then
 	exit 1
 fi
 
-parentPath=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 sortedExtension="sorted"
 folderA=$1
 folderB=$2
@@ -41,26 +40,26 @@ sortAndCompareFiles() {
 # Function to go through the files and folders of the target
 # Adapted from http://stackoverflow.com/questions/2154166/how-to-recursively-list-subdirectories-in-bash-without-using-find-or-ls-commands
 recurse() {
-	for i in "$parentPath/$folderA/$1/$2"/*;do
+	for i in "$folderA/$1/$2"/*;do
 		folderAChild=$( basename $i );
 		relativePath="$1/$2/$folderAChild"
 		if [ -d "$i" ];then
-			if [ -d "$parentPath/$folderB/$relativePath" ];then
+			if [ -d "$folderB/$relativePath" ];then
 				# It is a folder
 				recurse "$1/$2" $folderAChild 
 			else
-				echo "ERROR: folder $i exists but folder $parentPath/$folderB/$relativePath does not exists"
+				echo "ERROR: folder $i exists but folder $folderB/$relativePath does not exists"
 			fi
 		elif [ -f "$i" ]; then
-			if [ -f "$parentPath/$folderB/$relativePath" ];then
+			if [ -f "$folderB/$relativePath" ];then
 				if [ $quietMode -eq 0 ];then
 					echo "===== Checking $relativePath"
 				fi
 				# It is a file
 				# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
-				sortAndCompareFiles $i "$parentPath/$folderB/$relativePath" &
+				sortAndCompareFiles $i "$folderB/$relativePath" &
 			else
-				echo "ERROR: file $i exists but file $parentPath/$folderB/$relativePath does not exists"
+				echo "ERROR: file $i exists but file $folderB/$relativePath does not exists"
 			fi
 		fi
 	done
@@ -75,18 +74,18 @@ diff -qr $folderA $folderB
 echo "==========================================="
 
 echo "===== Starting File Check Differences ====="
-for i in "$parentPath/$folderA"/*; do
+for i in "$folderA"/*; do
 	folderAChild=$( basename $i );
 	if [ -d "$i" ];then
 		recurse "" $folderAChild
 	elif [ -f "$i" ]; then
-		if [ -f "$parentPath/$folderB/$folderAChild" ];then
+		if [ -f "$folderB/$folderAChild" ];then
 			if [ $quietMode -eq 0 ];then
 				echo "===== Checking $folderAChild"
 			fi
 			# It is a file
 			# & is to assist with muli-threading - http://stackoverflow.com/questions/18384505/how-do-i-use-parallel-programming-multi-threading-in-my-bash-script
-			sortAndCompareFiles $i "$parentPath/$folderB/$folderAChild" &
+			sortAndCompareFiles $i "$folderB/$folderAChild" &
 		else
 			echo "ERROR: file $i exists but file $folderB/$folderAChild does not exists"
 		fi
